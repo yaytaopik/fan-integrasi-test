@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "368243506951",
+    "project_id": "fantest-e6b4f",
+    "storage_bucket": "fantest-e6b4f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:368243506951:android:67a420a67fc2832926cfa2",
+        "android_client_info": {
+          "package_name": "com.example.fantest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "368243506951-47alisc8j8vfpg531nqsks5h9i69ln6f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fantest",
+            "certificate_hash": "abd102695f6b5cb12465e9ae248de8438e599bf4"
+          }
+        },
+        {
+          "client_id": "368243506951-5qq3v9ao465s0pm2i6vhur2pooo0mujn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGYzqglMP72EWNt_SiWqCkJ1RFp3H6vK8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "368243506951-5qq3v9ao465s0pm2i6vhur2pooo0mujn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
