@@ -3,6 +3,7 @@ import 'package:fantest/read_data/get_user_name.dart';
 import 'package:fantest/screens/signin_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import '../utils/color_utils.dart';
 import 'signin_screen.dart';
 
@@ -15,11 +16,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final user = FirebaseAuth.instance.currentUser!;
-
-  //gathering all users data
   List<String> docIDs = [];
-
-  // get doc ID
   Future getDocId() async {
     await FirebaseFirestore.instance
         .collection('users')
@@ -30,6 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
             }));
   }
 
+  // Future getUsersVer() async {
+  //   await FirebaseAuth.instance.use
+  // }
   @override
   void initState() {
     getDocId();
@@ -39,74 +39,98 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          user.email!,
-          style: TextStyle(fontSize: 15, color: Colors.white),
-        ),
-        actions: [
-          GestureDetector(
-            onTap: () {
-              FirebaseAuth.instance.signOut();
-            },
-            child: Icon(Icons.logout),
-          )
-        ],
-      ),
-      body: Center(
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          // decoration: BoxDecoration(
-          //   gradient: LinearGradient(colors: [
-          //     hexStringToColor("FFFFFF"),
-          //     hexStringToColor("9546C4"),
-          //     hexStringToColor("5E61F4")
-          //   ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
-          // ),
+      body: SafeArea(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              // Text(
-              //   "Signed in as: " + user.email!,
-              //   style: TextStyle(color: Colors.white, fontSize: 20),
-              // ),
-              // SizedBox(height: 30),
-              // ElevatedButton(
-              //     onPressed: () {
-              //       FirebaseAuth.instance.signOut().then((value) {
-              //         print("Signed Out");
-              //         Navigator.push(
-              //             context,
-              //             MaterialPageRoute(
-              //                 builder: (context) => SignInScreen()));
-              //       });
-              //     },
-              //     child: Text("Logout")),
-              SizedBox(height: 30),
-              Expanded(
-                  child: FutureBuilder(
-                      future: getDocId(),
-                      builder: (context, snapshot) {
-                        return ListView.builder(
-                          itemCount: docIDs.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ListTile(
-                                title: GetUserName(
-                                  documentId: docIDs[index],
-                                ),
-                                tileColor: Colors.grey,
-                              ),
-                            );
-                          },
-                        );
-                      }))
-            ],
+        children: <Widget>[
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [
+                hexStringToColor("FADBD8"),
+                hexStringToColor("F8F9F9"),
+                hexStringToColor("FEF5E7")
+              ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 200,
+                    child: Lottie.asset('assets/81252-hello.json',
+                        repeat: true, reverse: false, animate: true),
+                  ),
+                  SizedBox(height: 15),
+                  Text(
+                    "Hello " + user.email!,
+                    style: TextStyle(color: Colors.blueGrey, fontSize: 20),
+                  ),
+                  SizedBox(height: 20),
+                  user.emailVerified
+                      ? Text(
+                          'Email verified',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1!
+                              .copyWith(color: Colors.green),
+                        )
+                      : Text(
+                          'Email not verified',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1!
+                              .copyWith(color: Colors.red),
+                        ),
+                  SizedBox(height: 20),
+                  MaterialButton(
+                      onPressed: () {
+                        FirebaseAuth.instance.signOut().then((value) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SignInScreen(),
+                            ),
+                          );
+                        });
+                      },
+                      color: Colors.blueGrey,
+                      child: Text(
+                        "Sign out",
+                        style: TextStyle(color: Colors.white),
+                      ))
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+          SizedBox(height: 30),
+          Expanded(
+              child: FutureBuilder(
+            future: getDocId(),
+            builder: ((context, snapshot) {
+              return ListView.builder(
+                  itemCount: docIDs.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListTile(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
+                                bottomRight: Radius.circular(10),
+                                bottomLeft: Radius.circular(10))),
+                        title: GetUserName(documentId: docIDs[index]),
+                        tileColor: Colors.blueGrey.shade300,
+                        textColor: Colors.white,
+                        iconColor: Colors.white,
+                        leading: Icon(Icons.person),
+                      ),
+                    );
+                  });
+            }),
+          ))
+        ],
+      )),
     );
   }
 }
