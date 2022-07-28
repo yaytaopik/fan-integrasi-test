@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../utils/color_utils.dart';
 import 'home_screen.dart';
 
@@ -15,9 +15,49 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  TextEditingController _userNameTextController = TextEditingController();
-  TextEditingController _passwordTextController = TextEditingController();
-  TextEditingController _emailTextController = TextEditingController();
+  final _userNameTextController = TextEditingController();
+  final _passwordTextController = TextEditingController();
+  final _emailTextController = TextEditingController();
+  final _confirmPasswordTextController = TextEditingController();
+
+  @override
+  void dispose() {
+    _userNameTextController.dispose();
+    _emailTextController.dispose();
+    _passwordTextController.dispose();
+    _confirmPasswordTextController.dispose();
+    super.dispose();
+  }
+
+  // Future signUp() async {
+  //   if (passwordConfirmed()) {
+  //     await FirebaseAuth.instance
+  //         .createUserWithEmailAndPassword(
+  //             email: _emailTextController.text,
+  //             password: _passwordTextController.text)
+  //         .then((value) {
+  //       print("Created new account");
+  //       Navigator.push(
+  //           context, MaterialPageRoute(builder: (context) => HomeScreen()));
+  //     });
+  //   }
+  // }
+
+  Future addUserDetails(String userName, String email) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .add({'user name': userName, 'email': email});
+  }
+
+  bool passwordConfirmed() {
+    if (_passwordTextController.text.trim() ==
+        _confirmPasswordTextController.text.trim()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,6 +107,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const SizedBox(
                 height: 20,
               ),
+              reusableTextField("Confirm Password", Icons.password, true,
+                  _confirmPasswordTextController),
+              const SizedBox(
+                height: 20,
+              ),
               signInSignUpButton(context, false, () {
                 FirebaseAuth.instance
                     .createUserWithEmailAndPassword(
@@ -76,6 +121,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   print("Created new account");
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => HomeScreen()));
+                  addUserDetails(
+                      _userNameTextController.text, _emailTextController.text);
                 }).onError((error, stackTrace) {
                   print("Error ${error.toString()}");
                 });
